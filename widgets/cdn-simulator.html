@@ -3506,9 +3506,9 @@ state.history = []; // { region, type, latency, time }
 state.packets = []; // Active animations
 
 const REGIONS = {
-    Tokyo: { label: 'Токио', originLat: 200, localLat: 15, y: 0.25 },
+    Tokyo: { label: 'Токио', originLat: 200, localLat: 15, y: 0.18 },
     Berlin: { label: 'Берлин', originLat: 100, localLat: 10, y: 0.5 },
-    SaoPaulo: { label: 'Сан-Паулу', originLat: 130, localLat: 20, y: 0.75 }
+    SaoPaulo: { label: 'Сан-Паулу', originLat: 130, localLat: 20, y: 0.82 }
 };
 
 const ORIGIN = { label: 'New York (Origin)', x: 0.85, y: 0.5 };
@@ -3619,15 +3619,21 @@ WH.initCanvas('vizTop', (ctx) => {
         });
         ctx.setLineDash([]);
 
+        // Responsive icon sizing
+        const iconScale = Math.min(width, height) / 500;
+        const iconBig = Math.max(20, Math.round(40 * iconScale));
+        const iconSmall = Math.max(16, Math.round(32 * iconScale));
+        const tagOffset = Math.max(20, Math.round(35 * iconScale));
+
         // Draw Nodes
         // 1. Origin
         ctx.save();
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = '40px "Google Symbols"';
+        ctx.font = iconBig + 'px "Google Symbols"';
         ctx.fillStyle = WH.getColor('--primary');
         ctx.fillText('storage', originX, originY);
-        ctx.drawTag('Origin (NY)', originX, originY + 40, '--primary');
+        ctx.drawTag('Origin (NY)', originX, originY + tagOffset, '--primary');
         ctx.restore();
 
         // 2. Regions
@@ -3639,10 +3645,10 @@ WH.initCanvas('vizTop', (ctx) => {
             ctx.save();
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.font = '32px "Google Symbols"';
+            ctx.font = iconSmall + 'px "Google Symbols"';
             ctx.fillStyle = WH.getColor('--on-surface-default');
             ctx.fillText('laptop_mac', regionX, ry);
-            ctx.drawTag(reg.label, regionX, ry + 35);
+            ctx.drawTag(reg.label, regionX, ry + tagOffset);
             ctx.restore();
 
             // Edge Server Node (Only if CDN used)
@@ -3650,10 +3656,10 @@ WH.initCanvas('vizTop', (ctx) => {
                 ctx.save();
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.font = '32px "Google Symbols"';
+                ctx.font = iconSmall + 'px "Google Symbols"';
                 ctx.fillStyle = isCached ? WH.getColor('--positive') : WH.getColor('--outline');
                 ctx.fillText(isCached ? 'cloud_done' : 'cloud_off', edgeX, ry);
-                ctx.drawTag(isCached ? 'Кэш заполнен' : 'Пусто', edgeX, ry + 35, isCached ? '--positive' : '--outline');
+                ctx.drawTag(isCached ? 'Кэш заполнен' : 'Пусто', edgeX, ry + tagOffset, isCached ? '--positive' : '--outline');
                 ctx.restore();
             }
         });
