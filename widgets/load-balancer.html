@@ -1838,11 +1838,13 @@ input[type=range].xxs-slider {
                 root.appendChild(header);
 
                 const viz = document.createElement('div'); viz.id = 'viz'; viz.className = 'widget-ui-part viz-container grow bg-surface-container relative overflow-hidden'; 
+                viz.style.overflow = 'hidden';
+                viz.style.minHeight = '0';
                 const badges = document.createElement('div'); badges.id = 'viz-badges'; badges.className = 'viz-badges'; viz.appendChild(badges); root.appendChild(viz);
                 // CHANGE: Removed 'shrink-0', added 'min-h-0' (implied) to allow flex shrinking
                 const controls = document.createElement('div'); controls.id = 'controls-root'; controls.className = 'widget-ui-part p-m bg-surface w-full control-grid';
                 // CSS fix for flex-shrinking with internal scroll
-                controls.style.flex = '0 1 auto'; 
+                controls.style.flex = '0 0 auto'; 
                 root.appendChild(controls);
 
                 const api = {
@@ -2194,6 +2196,8 @@ input[type=range].xxs-slider {
                         const top = document.createElement('div'); top.id = 'viz-top'; top.className = 'relative overflow-hidden'; top.style.height = size; top.style.flexShrink = '0';
                         const bottom = document.createElement('div'); bottom.id = 'viz-bottom'; bottom.className = 'grow relative overflow-hidden border-t bg-surface'; 
                         bottom.style.width = '100%';
+                        bottom.style.overflow = 'hidden';
+                        bottom.style.position = 'relative';
                         viz.appendChild(top); viz.appendChild(bottom);
                         const badges = document.createElement('div'); badges.id = 'viz-badges'; badges.className = 'viz-badges'; top.appendChild(badges);
                         return { vizTop: 'viz-top', vizBottom: 'viz-bottom' };
@@ -3490,29 +3494,29 @@ input[type=range].xxs-slider {
 
 // 1. Setup App (UI + State)
 const { state, ui } = WH.createApp({
-    title: "Load Balancer Dashboard",
+    title: "Симулятор Балансировщика",
     params: {
         algorithm: { 
             value: 'Round Robin', 
             options: ['Round Robin', 'Weighted RR', 'Least Connections'],
-            label: "Algorithm"
+            label: "Алгоритм"
         },
-        w1: { value: 3, min: 1, max: 5, step: 1, label: "Weight S1" },
-        w2: { value: 1, min: 1, max: 5, step: 1, label: "Weight S2" },
-        w3: { value: 1, min: 1, max: 5, step: 1, label: "Weight S3" },
-        heavyLoad: { value: false, label: "Heavy Load on S2" },
+        w1: { value: 3, min: 1, max: 5, step: 1, label: "Вес S1" },
+        w2: { value: 1, min: 1, max: 5, step: 1, label: "Вес S2" },
+        w3: { value: 1, min: 1, max: 5, step: 1, label: "Вес S3" },
+        heavyLoad: { value: false, label: "Нагрузка на S2" },
         send: { 
             type: 'button', 
-            label: 'Send 60 Requests', 
+            label: 'Отправить 60 запросов', 
             onClick: (s) => processBatch(s) 
         },
         reset: { 
             type: 'button', 
-            label: 'Reset Counters', 
+            label: 'Сбросить счётчики', 
             onClick: (s) => {
                 s.counts = [0, 0, 0];
                 s.lastBatch = [0, 0, 0];
-                ui.setStatus("Counters reset.");
+                ui.setStatus("Счётчики сброшены.");
             }
         }
     }
@@ -3563,7 +3567,7 @@ function processBatch(s) {
     state.lastBatch = distribution;
     state.animOffset = 1.0; // Trigger "flow" animation
     
-    ui.setStatus(`Last Batch: ${distribution.join(' / ')} sent.`);
+    ui.setStatus(`Последний батч: ${distribution.join(' / ')} отправлено.`);
 }
 
 // 3. Layout Split
@@ -3624,7 +3628,7 @@ WH.initCanvas('vizTop', (ctx) => {
                 ctx.fillStyle = WH.getColor('--negative');
                 ctx.font = fontHeavy + 'px sans-serif';
                 ctx.textAlign = 'center';
-                ctx.fillText('HEAVY LOAD', x, serverY + 20);
+                ctx.fillText('НАГРУЗКА', x, serverY + 20);
                 ctx.restore();
             }
 
@@ -3637,7 +3641,7 @@ WH.initCanvas('vizTop', (ctx) => {
             ctx.restore();
 
             // Label & Total
-            ctx.drawTag(`Server ${i + 1}`, x, serverY + serverHeight - 40);
+            ctx.drawTag(`Сервер ${i + 1}`, x, serverY + serverHeight - 40);
             
             ctx.save();
             ctx.fillStyle = WH.getColor('--primary');
@@ -3671,8 +3675,8 @@ WH.initCanvas('vizTop', (ctx) => {
 
         // Live Dashboard
         ui.setHUD([
-            { label: "Active Strategy", value: state.algorithm },
-            { label: "Total Handled", value: state.counts.reduce((a, b) => a + b, 0) }
+            { label: "Алгоритм", value: state.algorithm },
+            { label: "Обработано", value: state.counts.reduce((a, b) => a + b, 0) }
         ]);
     };
 });
@@ -3682,10 +3686,13 @@ const renderChart = WH.initD3('vizBottom', (el, width, height) => {
     const margin = { top: 40, right: 20, bottom: 40, left: 60 };
     const svg = el.append('svg')
         .attr('width', width)
-        .attr('height', height);
+        .attr('height', height)
+        .style('position', 'absolute')
+        .style('top', '0')
+        .style('left', '0');
 
     const x = d3.scaleBand()
-        .domain(['Server 1', 'Server 2', 'Server 3'])
+        .domain(['Сервер 1', 'Сервер 2', 'Сервер 3'])
         .range([margin.left, width - margin.right])
         .padding(0.4);
 
@@ -3704,10 +3711,10 @@ const renderChart = WH.initD3('vizBottom', (el, width, height) => {
         .attr('y', 25)
         .style('fill', WH.getColor('--on-surface-default'))
         .style('font-weight', 'bold')
-        .text('Cumulative Request Distribution');
+        .text('Распределение запросов');
 
     return () => {
-        const data = state.counts.map((v, i) => ({ name: `Server ${i + 1}`, value: v }));
+        const data = state.counts.map((v, i) => ({ name: `Сервер ${i + 1}`, value: v }));
         const maxVal = Math.max(10, d3.max(data, d => d.value) || 0);
         
         y.domain([0, maxVal * 1.1]);
