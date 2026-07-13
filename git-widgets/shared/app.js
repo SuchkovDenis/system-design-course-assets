@@ -136,19 +136,68 @@
     const labelsByCommit = {};
     Object.values(tree.branches || {}).forEach((branch) => { labelsByCommit[branch.target] = (labelsByCommit[branch.target] || 0) + 1; });
     Object.values(tree.tags || {}).forEach((tag) => { labelsByCommit[tag.target] = (labelsByCommit[tag.target] || 0) + 1; });
-    const maxLabels = Math.max(1, ...Object.values(labelsByCommit));
     const maxDepth = Math.max(0, ...Object.values(depthMemo));
     const maxLane = Math.max(0, ...Object.values(lane));
-    const gapX = 82;
-    const gapY = 66;
-    const topPadding = 58 + maxLabels * 30;
-    const width = Math.max(470, 96 + maxDepth * gapX + 80);
-    const height = Math.max(150, topPadding + maxLane * gapY + 52);
+    const gapX = 72;
+    const gapY = 58;
+    const leftPadding = 44;
+    const topPadding = 86;
+    const width = Math.max(400, leftPadding * 2 + maxDepth * gapX + 76);
+    const height = Math.max(172, topPadding + maxLane * gapY + 86);
     const points = {};
     ids.forEach((id) => {
-      points[id] = { x: 48 + depthMemo[id] * gapX, y: topPadding + lane[id] * gapY };
+      points[id] = { x: leftPadding + depthMemo[id] * gapX, y: topPadding + lane[id] * gapY };
     });
     return { ids, points, width, height };
+  }
+
+  function boxesOverlap(left, right, padding = 4) {
+    return !(
+      left.x + left.width + padding <= right.x ||
+      right.x + right.width + padding <= left.x ||
+      left.y + left.height + padding <= right.y ||
+      right.y + right.height + padding <= left.y
+    );
+  }
+
+  function placeReferenceLabel(point, pillWidth, width, height, occupied, preferredSides) {
+    const nodeRadius = 17;
+    const pillHeight = 24;
+    const gap = 8;
+    let best;
+    preferredSides.forEach((side, preference) => {
+      [0, 1, 2].forEach((ring) => {
+        const verticalDistance = nodeRadius + gap + ring * (pillHeight + 6);
+        const horizontalDistance = nodeRadius + gap + ring * (pillWidth + 6);
+        const raw = {
+          top: { x: point.x - pillWidth / 2, y: point.y - verticalDistance - pillHeight },
+          right: { x: point.x + horizontalDistance, y: point.y - pillHeight / 2 },
+          bottom: { x: point.x - pillWidth / 2, y: point.y + verticalDistance },
+          left: { x: point.x - horizontalDistance - pillWidth, y: point.y - pillHeight / 2 }
+        }[side];
+        const box = {
+          x: Math.max(6, Math.min(raw.x, width - pillWidth - 6)),
+          y: Math.max(6, Math.min(raw.y, height - pillHeight - 6)),
+          width: pillWidth,
+          height: pillHeight,
+          side
+        };
+        const collisionCount = occupied.filter((other) => boxesOverlap(box, other)).length;
+        const clampDistance = Math.abs(box.x - raw.x) + Math.abs(box.y - raw.y);
+        const score = collisionCount * 1000 + clampDistance * 5 + preference * 4 + ring * 2;
+        if (!best || score < best.score) best = { ...box, score };
+      });
+    });
+    occupied.push(best);
+    const centerX = best.x + pillWidth / 2;
+    const centerY = best.y + pillHeight / 2;
+    const connector = {
+      top: { x1: point.x, y1: point.y - nodeRadius, x2: centerX, y2: best.y + pillHeight },
+      right: { x1: point.x + nodeRadius, y1: point.y, x2: best.x, y2: centerY },
+      bottom: { x1: point.x, y1: point.y + nodeRadius, x2: centerX, y2: best.y },
+      left: { x1: point.x - nodeRadius, y1: point.y, x2: best.x + pillWidth, y2: centerY }
+    }[best.side];
+    return { ...best, connector };
   }
 
   function captureMotion(container) {
@@ -184,8 +233,14 @@
 
   function renderTree(tree, keyPrefix) {
     const { ids, points, width, height } = layoutGraph(tree);
-    const svg = svgElement("svg", { class: "git-graph", viewBox: `0 0 ${width} ${height}`, role: "img" });
-    svg.style.minWidth = `${Math.min(width, 820)}px`;
+    const svg = svgElement("svg", {
+      class: "git-graph",
+      viewBox: `0 0 ${width} ${height}`,
+      width,
+      height,
+      role: "img",
+      preserveAspectRatio: "xMidYMid meet"
+    });
     const headRef = tree.HEAD.target;
     const headCommit = tree.branches[headRef] ? tree.branches[headRef].target : headRef;
 
@@ -196,8 +251,8 @@
         if (!parent) return;
         const path = svgElement("path", {
           d: parent.y === child.y
-            ? `M ${parent.x + 20} ${parent.y} L ${child.x - 20} ${child.y}`
-            : `M ${parent.x + 18} ${parent.y} C ${parent.x + 44} ${parent.y}, ${child.x - 44} ${child.y}, ${child.x - 18} ${child.y}`,
+            ? `M ${parent.x + 17} ${parent.y} L ${child.x - 17} ${child.y}`
+            : `M ${parent.x + 15} ${parent.y} C ${parent.x + 38} ${parent.y}, ${child.x - 38} ${child.y}, ${child.x - 15} ${child.y}`,
           class: "git-line",
           "data-motion-key": `${keyPrefix}-line-${parentId}-${id}-${parentIndex}`
         });
@@ -211,7 +266,7 @@
       const node = svgElement("circle", {
         cx: point.x,
         cy: point.y,
-        r: 21,
+        r: 17,
         class: `git-node${isHead ? " is-head" : ""}`,
         "data-motion-key": `${keyPrefix}-node-${id}`
       });
@@ -232,25 +287,36 @@
     Object.entries(tree.tags || {}).forEach(([name, tag]) => {
       (labelsByCommit[tag.target] ||= []).push(name);
     });
+    const occupied = ids.map((id) => ({
+      x: points[id].x - 19,
+      y: points[id].y - 19,
+      width: 38,
+      height: 38
+    }));
     Object.entries(labelsByCommit).forEach(([commitId, labels]) => {
       const point = points[commitId];
       if (!point) return;
       labels.sort((a, b) => (a === headRef ? -1 : b === headRef ? 1 : a.localeCompare(b))).forEach((name, index) => {
-        const pillWidth = Math.max(48, 20 + name.length * 7);
-        const x = Math.max(8, Math.min(point.x - pillWidth / 2, width - pillWidth - 8));
-        const y = Math.max(7, point.y - 49 - index * 30);
+        const pillWidth = Math.max(40, 16 + name.length * 6.2);
         const isHead = name === headRef;
+        const preferredSides = isHead
+          ? ["top", "right", "left", "bottom"]
+          : index === 0
+            ? ["bottom", "right", "left", "top"]
+            : ["right", "left", "bottom", "top"];
+        const placement = placeReferenceLabel(point, pillWidth, width, height, occupied, preferredSides);
         svg.appendChild(svgElement("line", {
-          x1: point.x, y1: point.y - 20, x2: x + pillWidth / 2, y2: y + 30, class: "branch-connector",
+          ...placement.connector,
+          class: "branch-connector",
           "data-motion-key": `${keyPrefix}-connector-${name}`
         }));
         svg.appendChild(svgElement("rect", {
-          x, y, width: pillWidth, height: 30, rx: 15,
+          x: placement.x, y: placement.y, width: pillWidth, height: 24, rx: 12,
           class: `branch-pill${isHead ? " is-head" : ""}`,
           "data-motion-key": `${keyPrefix}-pill-${name}`
         }));
         const text = svgElement("text", {
-          x: x + pillWidth / 2, y: y + 15,
+          x: placement.x + pillWidth / 2, y: placement.y + 12,
           class: `branch-label${isHead ? " is-head" : ""}`,
           "data-motion-key": `${keyPrefix}-branch-${name}`
         });

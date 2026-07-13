@@ -99,16 +99,16 @@ code { font-family: var(--st-font-code); }
 .repo-subgraph { overflow-x: auto; }
 .repo-subgraph + .repo-subgraph { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #cfcfcf; }
 .repo-title { margin: 0 0 4px; color: var(--st-text-muted); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-.git-graph { display: block; width: 100%; min-height: 125px; overflow: visible; }
-.git-line { fill: none; stroke: #a8a8a8; stroke-width: 4; stroke-linecap: round; }
-.git-node { fill: white; stroke: #777; stroke-width: 4; }
+.git-graph { display: block; width: auto; max-width: none; height: auto; margin: 0 auto; overflow: visible; }
+.git-line { fill: none; stroke: #a8a8a8; stroke-width: 3; stroke-linecap: round; }
+.git-node { fill: white; stroke: #777; stroke-width: 3; }
 .git-node.is-head { fill: #666; }
-.git-node-label { fill: #555; font-family: var(--st-font-code); font-size: 14px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.git-node-label { fill: #555; font-family: var(--st-font-code); font-size: 11px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
 .git-node-label.is-head { fill: white; }
 .branch-connector { stroke: #777; stroke-width: 2; }
 .branch-pill { fill: white; stroke: #aaa; stroke-width: 1.5; }
 .branch-pill.is-head { fill: #666; stroke: #666; }
-.branch-label { fill: #555; font-family: var(--st-font-code); font-size: 11px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.branch-label { fill: #555; font-family: var(--st-font-code); font-size: 10px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
 .branch-label.is-head { fill: white; }
 .state-target .git-line { stroke: #92cf95; }
 .state-target .git-node { stroke: var(--st-green-dark); }
@@ -117,10 +117,10 @@ code { font-family: var(--st-font-code); }
 .state-target .branch-pill { stroke: #8fcf94; }
 .state-target .branch-pill.is-head { fill: var(--st-green-dark); stroke: var(--st-green-dark); }
 
-.goal-divider { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; color: var(--st-text-muted); font-size: 13px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; transition: opacity 280ms, height 500ms; }
+.goal-divider { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 58px; color: var(--st-text-muted); font-size: 12px; font-weight: 600; letter-spacing: .03em; line-height: 1.15; text-align: center; text-transform: uppercase; transition: opacity 280ms, height 500ms; }
 .down-arrow { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #a9dda9; border-radius: 50%; color: var(--st-green-dark); background: var(--st-green-bg); font-size: 19px; }
 
-.comparison-panel.is-merging .state-target { transform: translateY(calc(-100% - 46px)); opacity: 0; }
+.comparison-panel.is-merging .state-target { transform: translateY(calc(-100% - 58px)); opacity: 0; }
 .comparison-panel.is-merging .goal-divider { opacity: 0; }
 .comparison-panel.is-merged .state-target, .comparison-panel.is-merged .goal-divider { display: none; }
 .comparison-panel.is-merged .state-current { border-color: #b8e5ba; border-left-color: var(--st-green); background: var(--st-green-bg); }
