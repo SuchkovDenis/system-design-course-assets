@@ -1,0 +1,191 @@
+{
+  "id": "18-branch-spaghetti",
+  "order": 18,
+  "sequence": "advanced",
+  "sequenceTitle": "Продвинутая история",
+  "source": {
+    "sequence": "advanced",
+    "index": 2,
+    "englishName": "Branch Spaghetti"
+  },
+  "title": "Спагетти из веток",
+  "instruction": "Обновите one, two и three измененными копиями выбранных коммитов main согласно цели.",
+  "hint": "Работайте по порядку: сначала one, затем two, затем three.",
+  "availableCommands": [
+    "git checkout",
+    "git cherry-pick",
+    "git branch -f"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C5",
+        "id": "main"
+      },
+      "one": {
+        "target": "C1",
+        "id": "one"
+      },
+      "two": {
+        "target": "C1",
+        "id": "two"
+      },
+      "three": {
+        "target": "C1",
+        "id": "three"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C4"
+        ],
+        "id": "C5"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C5",
+        "id": "main"
+      },
+      "one": {
+        "target": "C2'",
+        "id": "one"
+      },
+      "two": {
+        "target": "C2''",
+        "id": "two"
+      },
+      "three": {
+        "target": "C2",
+        "id": "three"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C4"
+        ],
+        "id": "C5"
+      },
+      "C4'": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C4'"
+      },
+      "C3'": {
+        "parents": [
+          "C4'"
+        ],
+        "id": "C3'"
+      },
+      "C2'": {
+        "parents": [
+          "C3'"
+        ],
+        "id": "C2'"
+      },
+      "C5'": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C5'"
+      },
+      "C4''": {
+        "parents": [
+          "C5'"
+        ],
+        "id": "C4''"
+      },
+      "C3''": {
+        "parents": [
+          "C4''"
+        ],
+        "id": "C3''"
+      },
+      "C2''": {
+        "parents": [
+          "C3''"
+        ],
+        "id": "C2''"
+      }
+    },
+    "HEAD": {
+      "target": "two",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git revert": true
+  },
+  "comparison": {
+    "compareAllBranchesHashAgnostic": true
+  },
+  "assertions": {},
+  "hasRemote": false
+}

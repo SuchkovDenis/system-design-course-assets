@@ -1,0 +1,54 @@
+{
+  "id": "02-intro-branching",
+  "order": 2,
+  "sequence": "intro",
+  "sequenceTitle": "Основы",
+  "source": {
+    "sequence": "intro",
+    "index": 1,
+    "englishName": "Branching in Git"
+  },
+  "title": "Ветки в Git",
+  "instruction": "Создайте ветку bugFix и переключитесь на нее.",
+  "hint": "Сначала создайте ветку командой git branch, затем переключитесь на нее через git checkout.",
+  "availableCommands": [
+    "git branch",
+    "git checkout"
+  ],
+  "startTree": null,
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main"
+      },
+      "bugFix": {
+        "target": "C1",
+        "id": "bugFix"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      }
+    },
+    "HEAD": {
+      "target": "bugFix",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git revert": true
+  },
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": false
+}

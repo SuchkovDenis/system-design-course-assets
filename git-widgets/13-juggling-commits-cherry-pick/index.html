@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#66cc66" />
+    <title>Git-тренажер · suchkov-tech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&amp;family=Source+Code+Pro:wght@400;600&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/styles.css" />
+  </head>
+  <body data-level-path="../levels/13-juggling-commits-cherry-pick.json">
+    <main class="git-widget" aria-labelledby="widget-instruction">
+      <section id="info-panel" class="notice notice-info" role="note">
+        <svg class="notice-icon" aria-hidden="true" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 10.5v6"></path>
+          <circle class="info-dot" cx="12" cy="7.5" r=".8"></circle>
+        </svg>
+        <div>
+          <strong>Текущая ветка: <code id="current-branch">main</code></strong>
+          <p id="widget-instruction">Загрузка упражнения…</p>
+        </div>
+      </section>
+
+      <section id="success-panel" class="notice notice-success" role="status" hidden>
+        <span class="success-icon" aria-hidden="true">✓</span>
+        <div>
+          <strong>Верно. Репозиторий совпадает с целью.</strong>
+          <p id="success-summary">Все необходимые ссылки и коммиты находятся на своих местах.</p>
+        </div>
+      </section>
+
+      <div class="widget-grid">
+        <section class="terminal-panel" aria-labelledby="terminal-title">
+          <div class="panel-heading"><h2 id="terminal-title">Команда</h2></div>
+          <div class="terminal-shell">
+            <div id="terminal-output" class="terminal-output" role="log" aria-live="polite" aria-label="История команд">
+              <div class="terminal-message welcome">Репозиторий готов. Введите первую команду.</div>
+            </div>
+            <form id="command-form" class="command-form" autocomplete="off">
+              <label class="sr-only" for="command-input">Команда Git</label>
+              <span class="prompt" aria-hidden="true">$</span>
+              <input id="command-input" name="command" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="widget-instruction command-help" />
+              <button class="button button-primary" type="submit">
+                <svg class="icon-filled" aria-hidden="true" viewBox="0 0 20 20"><path d="M5 3.8 16 10 5 16.2Z"></path></svg>
+                <span>Выполнить</span>
+              </button>
+            </form>
+          </div>
+          <div id="command-help" class="command-help">
+            <span>Доступные команды:</span>
+            <div id="command-list" class="command-list"></div>
+          </div>
+        </section>
+
+        <section id="comparison-panel" class="comparison-panel" aria-labelledby="comparison-title">
+          <div class="panel-heading"><h2 id="comparison-title">Состояние репозитория</h2></div>
+          <article id="current-card" class="state-card state-current">
+            <header class="state-label">
+              <div><span class="state-marker" aria-hidden="true"></span><strong id="current-state-title">Ваш репозиторий сейчас</strong></div>
+              <span id="current-caption"></span>
+            </header>
+            <div id="current-repository" class="repository-view" aria-label="Текущее состояние репозитория"></div>
+          </article>
+          <div id="goal-divider" class="goal-divider" aria-hidden="true"><span class="down-arrow">↓</span><span>нужно получить</span></div>
+          <article id="goal-card" class="state-card state-target">
+            <header class="state-label">
+              <div><span class="target-icon" aria-hidden="true">✓</span><strong>Цель упражнения</strong></div>
+              <span id="goal-caption"></span>
+            </header>
+            <div id="goal-repository" class="repository-view" aria-label="Целевое состояние репозитория"></div>
+          </article>
+        </section>
+      </div>
+
+      <footer class="widget-actions" aria-label="Действия тренажера">
+        <button id="reset-button" class="button button-secondary" type="button">
+          <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4.1 7.2A6.5 6.5 0 1 1 3.5 12"></path><path d="M1.8 4.7v4.5h4.5"></path></svg>
+          <span>Начать заново</span>
+        </button>
+      </footer>
+    </main>
+
+    <dialog id="rebase-dialog" class="rebase-dialog" aria-labelledby="rebase-title">
+      <form method="dialog" id="rebase-form">
+        <header><h2 id="rebase-title">Интерактивный rebase</h2><p>Оставьте нужные коммиты и расположите их в новом порядке.</p></header>
+        <ol id="rebase-list" class="rebase-list"></ol>
+        <footer>
+          <button id="rebase-cancel" class="button button-secondary" value="cancel" type="button">Отмена</button>
+          <button class="button button-primary" value="confirm" type="submit">Применить</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="../shared/engine.js"></script>
+    <script src="../shared/app.js"></script>
+  </body>
+</html>

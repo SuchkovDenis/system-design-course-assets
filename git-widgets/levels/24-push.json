@@ -1,0 +1,169 @@
+{
+  "id": "24-push",
+  "order": 24,
+  "sequence": "remote",
+  "sequenceTitle": "Удаленные репозитории",
+  "source": {
+    "sequence": "remote",
+    "index": 5,
+    "englishName": "Git Pushin'"
+  },
+  "title": "Публикация через push",
+  "instruction": "Создайте два локальных коммита и отправьте их в удаленный репозиторий.",
+  "hint": "Перед push репозиторий должен быть клонирован.",
+  "availableCommands": [
+    "git commit",
+    "git push"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "o/main": {
+        "target": "C1",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      }
+    },
+    "tags": {},
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C1",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        }
+      },
+      "tags": {},
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C3",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main",
+        "localBranchesThatTrackThis": null
+      },
+      "o/main": {
+        "target": "C3",
+        "id": "o/main",
+        "remoteTrackingBranchID": null,
+        "localBranchesThatTrackThis": [
+          "main"
+        ]
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C3",
+          "id": "main",
+          "remoteTrackingBranchID": null,
+          "localBranchesThatTrackThis": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        },
+        "C2": {
+          "parents": [
+            "C1"
+          ],
+          "id": "C2"
+        },
+        "C3": {
+          "parents": [
+            "C2"
+          ],
+          "id": "C3"
+        }
+      },
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "disabledMap": {
+    "git fakeTeamwork": true
+  },
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": true
+}

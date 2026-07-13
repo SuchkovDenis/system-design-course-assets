@@ -1,0 +1,157 @@
+{
+  "id": "33-empty-source",
+  "order": 33,
+  "sequence": "remoteAdvanced",
+  "sequenceTitle": "Продвинутая работа с remotes",
+  "source": {
+    "sequence": "remoteAdvanced",
+    "index": 6,
+    "englishName": "Source of nothing"
+  },
+  "title": "Пустой источник refspec",
+  "instruction": "Удалите одну удаленную ветку и создайте новую локальную ветку через fetch.",
+  "hint": "Пустая сторона refspec удаляет ссылку на соответствующей стороне.",
+  "availableCommands": [
+    "git push origin :<branch>",
+    "git fetch origin :<branch>"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "o/main": {
+        "target": "C1",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      },
+      "o/foo": {
+        "target": "C1",
+        "id": "o/foo",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C1",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        },
+        "foo": {
+          "target": "C1",
+          "id": "foo",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        }
+      },
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "o/main": {
+        "target": "C1",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      },
+      "bar": {
+        "target": "C1",
+        "id": "bar",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C1",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        }
+      },
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "disabledMap": {
+    "git branch": true,
+    "git checkout": true,
+    "git switch": true
+  },
+  "comparison": {
+    "compareAllBranchesAndEnforceBranchCleanup": true
+  },
+  "assertions": {},
+  "hasRemote": true
+}

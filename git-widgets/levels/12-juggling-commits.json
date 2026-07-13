@@ -1,0 +1,161 @@
+{
+  "id": "12-juggling-commits",
+  "order": 12,
+  "sequence": "mixed",
+  "sequenceTitle": "Смешанная практика",
+  "source": {
+    "sequence": "mixed",
+    "index": 1,
+    "englishName": "Juggling Commits"
+  },
+  "title": "Перестановка коммитов",
+  "instruction": "Измените нужный ранний коммит через rebase -i и commit --amend, затем восстановите порядок.",
+  "hint": "Начните с git rebase -i HEAD~2.",
+  "availableCommands": [
+    "git rebase -i",
+    "git commit --amend",
+    "git rebase"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main"
+      },
+      "newImage": {
+        "target": "C2",
+        "id": "newImage"
+      },
+      "caption": {
+        "target": "C3",
+        "id": "caption"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      }
+    },
+    "HEAD": {
+      "target": "caption",
+      "id": "HEAD"
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C3''",
+        "id": "main"
+      },
+      "newImage": {
+        "target": "C2",
+        "id": "newImage"
+      },
+      "caption": {
+        "target": "C3''",
+        "id": "caption"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C3'": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3'"
+      },
+      "C2'": {
+        "parents": [
+          "C3'"
+        ],
+        "id": "C2'"
+      },
+      "C2''": {
+        "parents": [
+          "C3'"
+        ],
+        "id": "C2''"
+      },
+      "C2'''": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2'''"
+      },
+      "C3''": {
+        "parents": [
+          "C2'''"
+        ],
+        "id": "C3''"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git cherry-pick": true,
+    "git revert": true
+  },
+  "comparison": {
+    "compareOnlyMainHashAgnosticWithAsserts": true
+  },
+  "assertions": {
+    "main": [
+      {
+        "left": "C2",
+        "op": ">",
+        "right": "C3"
+      },
+      {
+        "left": "C2",
+        "op": ">",
+        "right": "C1"
+      }
+    ]
+  },
+  "hasRemote": false
+}

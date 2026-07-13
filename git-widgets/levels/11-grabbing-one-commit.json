@@ -1,0 +1,151 @@
+{
+  "id": "11-grabbing-one-commit",
+  "order": 11,
+  "sequence": "mixed",
+  "sequenceTitle": "Смешанная практика",
+  "source": {
+    "sequence": "mixed",
+    "index": 0,
+    "englishName": "Grabbing Just 1 Commit"
+  },
+  "title": "Перенос одного коммита",
+  "instruction": "Перенесите в main только тот коммит, на который указывает bugFix.",
+  "hint": "Здесь помогут интерактивный rebase или cherry-pick.",
+  "availableCommands": [
+    "git rebase -i",
+    "git rebase",
+    "git cherry-pick"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main"
+      },
+      "debug": {
+        "target": "C2",
+        "id": "debug"
+      },
+      "printf": {
+        "target": "C3",
+        "id": "printf"
+      },
+      "bugFix": {
+        "target": "C4",
+        "id": "bugFix"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C4"
+      }
+    },
+    "HEAD": {
+      "target": "bugFix",
+      "id": "HEAD"
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C4'",
+        "id": "main"
+      },
+      "debug": {
+        "target": "C2",
+        "id": "debug"
+      },
+      "printf": {
+        "target": "C3",
+        "id": "printf"
+      },
+      "bugFix": {
+        "target": "C4'",
+        "id": "bugFix"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C4'": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C4'"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git revert": true
+  },
+  "comparison": {
+    "compareOnlyMainHashAgnosticWithAsserts": true
+  },
+  "assertions": {
+    "main": [
+      {
+        "left": "C4",
+        "op": ">",
+        "right": "C1"
+      }
+    ]
+  },
+  "hasRemote": false
+}

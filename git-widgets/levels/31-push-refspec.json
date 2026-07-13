@@ -1,0 +1,252 @@
+{
+  "id": "31-push-refspec",
+  "order": 31,
+  "sequence": "remoteAdvanced",
+  "sequenceTitle": "Продвинутая работа с remotes",
+  "source": {
+    "sequence": "remoteAdvanced",
+    "index": 4,
+    "englishName": "Git push arguments -- Expanded!"
+  },
+  "title": "Расширенные аргументы push",
+  "instruction": "Добейтесь целевого состояния через refspec вида источник:назначение.",
+  "hint": "Источник и назначение push могут быть разными ссылками.",
+  "availableCommands": [
+    "git push origin <source>:<destination>"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C6",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "foo": {
+        "target": "C4",
+        "id": "foo",
+        "remoteTrackingBranchID": "o/foo"
+      },
+      "o/main": {
+        "target": "C1",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      },
+      "o/foo": {
+        "target": "C1",
+        "id": "o/foo",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C2",
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C5"
+      },
+      "C6": {
+        "parents": [
+          "C5"
+        ],
+        "id": "C6"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C1",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        },
+        "foo": {
+          "target": "C1",
+          "id": "foo",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        }
+      },
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C6",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "foo": {
+        "target": "C4",
+        "id": "foo",
+        "remoteTrackingBranchID": "o/foo"
+      },
+      "o/main": {
+        "target": "C4",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      },
+      "o/foo": {
+        "target": "C5",
+        "id": "o/foo",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C2",
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C5"
+      },
+      "C6": {
+        "parents": [
+          "C5"
+        ],
+        "id": "C6"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C4",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        },
+        "foo": {
+          "target": "C5",
+          "id": "foo",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        },
+        "C2": {
+          "parents": [
+            "C1"
+          ],
+          "id": "C2"
+        },
+        "C5": {
+          "parents": [
+            "C2"
+          ],
+          "id": "C5"
+        },
+        "C3": {
+          "parents": [
+            "C1"
+          ],
+          "id": "C3"
+        },
+        "C4": {
+          "parents": [
+            "C2",
+            "C3"
+          ],
+          "id": "C4"
+        }
+      },
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "disabledMap": {},
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": true
+}

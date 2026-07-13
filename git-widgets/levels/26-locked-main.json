@@ -1,0 +1,174 @@
+{
+  "id": "26-locked-main",
+  "order": 26,
+  "sequence": "remote",
+  "sequenceTitle": "Удаленные репозитории",
+  "source": {
+    "sequence": "remote",
+    "index": 7,
+    "englishName": "Locked Main"
+  },
+  "title": "Защищенная ветка main",
+  "instruction": "Верните main к o/main, сохраните работу в feature и отправьте feature на сервер.",
+  "hint": "Создайте feature от локального main до того, как вернете main к состоянию origin.",
+  "availableCommands": [
+    "git branch -f",
+    "git checkout -b",
+    "git push"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C2",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "o/main": {
+        "target": "C1",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      }
+    },
+    "tags": {},
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C1",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        }
+      },
+      "tags": {},
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main",
+        "remoteTrackingBranchID": "o/main"
+      },
+      "o/main": {
+        "target": "C1",
+        "id": "o/main",
+        "remoteTrackingBranchID": null
+      },
+      "feature": {
+        "target": "C2",
+        "id": "feature",
+        "remoteTrackingBranchID": "o/feature"
+      },
+      "o/feature": {
+        "target": "C2",
+        "id": "o/feature",
+        "remoteTrackingBranchID": null
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      }
+    },
+    "tags": {},
+    "HEAD": {
+      "target": "feature",
+      "id": "HEAD"
+    },
+    "originTree": {
+      "branches": {
+        "main": {
+          "target": "C1",
+          "id": "main",
+          "remoteTrackingBranchID": null
+        },
+        "feature": {
+          "target": "C2",
+          "id": "feature",
+          "remoteTrackingBranchID": null
+        }
+      },
+      "commits": {
+        "C0": {
+          "parents": [],
+          "id": "C0",
+          "rootCommit": true
+        },
+        "C1": {
+          "parents": [
+            "C0"
+          ],
+          "id": "C1"
+        },
+        "C2": {
+          "parents": [
+            "C1"
+          ],
+          "id": "C2"
+        }
+      },
+      "tags": {},
+      "HEAD": {
+        "target": "main",
+        "id": "HEAD"
+      }
+    }
+  },
+  "disabledMap": {},
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": true
+}

@@ -1,0 +1,73 @@
+{
+  "id": "04-intro-rebasing",
+  "order": 4,
+  "sequence": "intro",
+  "sequenceTitle": "Основы",
+  "source": {
+    "sequence": "intro",
+    "index": 3,
+    "englishName": "Rebase Introduction"
+  },
+  "title": "Знакомство с rebase",
+  "instruction": "Создайте расходящиеся изменения в bugFix и main, затем перенесите bugFix поверх main.",
+  "hint": "Первый коммит сделайте в bugFix, второй в main, затем выполните rebase из bugFix.",
+  "availableCommands": [
+    "git checkout -b",
+    "git commit",
+    "git rebase"
+  ],
+  "startTree": null,
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C3",
+        "id": "main"
+      },
+      "bugFix": {
+        "target": "C2'",
+        "id": "bugFix"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3"
+      },
+      "C2'": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C2'"
+      }
+    },
+    "HEAD": {
+      "target": "bugFix",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git revert": true
+  },
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": false
+}

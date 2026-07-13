@@ -1,0 +1,189 @@
+{
+  "id": "09-cherry-pick",
+  "order": 9,
+  "sequence": "move",
+  "sequenceTitle": "Перемещение изменений",
+  "source": {
+    "sequence": "move",
+    "index": 0,
+    "englishName": "Cherry-pick Intro"
+  },
+  "title": "Знакомство с cherry-pick",
+  "instruction": "Перенесите в main нужные коммиты из трех показанных веток.",
+  "hint": "Передайте git cherry-pick идентификаторы коммитов в нужном порядке.",
+  "availableCommands": [
+    "git cherry-pick"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C1",
+        "id": "main"
+      },
+      "bugFix": {
+        "target": "C3",
+        "id": "bugFix"
+      },
+      "side": {
+        "target": "C5",
+        "id": "side"
+      },
+      "another": {
+        "target": "C7",
+        "id": "another"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C4"
+        ],
+        "id": "C5"
+      },
+      "C6": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C6"
+      },
+      "C7": {
+        "parents": [
+          "C6"
+        ],
+        "id": "C7"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C7'",
+        "id": "main"
+      },
+      "bugFix": {
+        "target": "C3",
+        "id": "bugFix"
+      },
+      "side": {
+        "target": "C5",
+        "id": "side"
+      },
+      "another": {
+        "target": "C7",
+        "id": "another"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C4"
+        ],
+        "id": "C5"
+      },
+      "C6": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C6"
+      },
+      "C7": {
+        "parents": [
+          "C6"
+        ],
+        "id": "C7"
+      },
+      "C3'": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3'"
+      },
+      "C4'": {
+        "parents": [
+          "C3'"
+        ],
+        "id": "C4'"
+      },
+      "C7'": {
+        "parents": [
+          "C4'"
+        ],
+        "id": "C7'"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git rebase": true
+  },
+  "comparison": {
+    "compareOnlyMainHashAgnostic": true
+  },
+  "assertions": {},
+  "hasRemote": false
+}

@@ -1,0 +1,149 @@
+{
+  "id": "17-multiple-parents",
+  "order": 17,
+  "sequence": "advanced",
+  "sequenceTitle": "Продвинутая история",
+  "source": {
+    "sequence": "advanced",
+    "index": 1,
+    "englishName": "Multiple parents"
+  },
+  "title": "Несколько родителей",
+  "instruction": "Создайте ветку bugWork на заданном предке merge-коммита, используя ^ и номер родителя.",
+  "hint": "Передайте git branch bugWork относительную ссылку с выбором второго родителя.",
+  "availableCommands": [
+    "git branch"
+  ],
+  "startTree": {
+    "branches": {
+      "main": {
+        "target": "C7",
+        "id": "main"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C5"
+      },
+      "C6": {
+        "parents": [
+          "C4",
+          "C5"
+        ],
+        "id": "C6"
+      },
+      "C7": {
+        "parents": [
+          "C6"
+        ],
+        "id": "C7"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C7",
+        "id": "main"
+      },
+      "bugWork": {
+        "target": "C2",
+        "id": "bugWork"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3"
+        ],
+        "id": "C4"
+      },
+      "C5": {
+        "parents": [
+          "C2"
+        ],
+        "id": "C5"
+      },
+      "C6": {
+        "parents": [
+          "C4",
+          "C5"
+        ],
+        "id": "C6"
+      },
+      "C7": {
+        "parents": [
+          "C6"
+        ],
+        "id": "C7"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {},
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": false
+}

@@ -1,0 +1,74 @@
+{
+  "id": "03-intro-merging",
+  "order": 3,
+  "sequence": "intro",
+  "sequenceTitle": "Основы",
+  "source": {
+    "sequence": "intro",
+    "index": 2,
+    "englishName": "Merging in Git"
+  },
+  "title": "Слияние веток",
+  "instruction": "Создайте bugFix, сделайте по коммиту в bugFix и main, затем влейте bugFix в main.",
+  "hint": "Сначала сделайте коммит в bugFix, затем коммит в main и только после этого выполните merge.",
+  "availableCommands": [
+    "git checkout -b",
+    "git commit",
+    "git merge"
+  ],
+  "startTree": null,
+  "goalTree": {
+    "branches": {
+      "main": {
+        "target": "C4",
+        "id": "main"
+      },
+      "bugFix": {
+        "target": "C2",
+        "id": "bugFix"
+      }
+    },
+    "commits": {
+      "C0": {
+        "parents": [],
+        "id": "C0",
+        "rootCommit": true
+      },
+      "C1": {
+        "parents": [
+          "C0"
+        ],
+        "id": "C1"
+      },
+      "C2": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C2"
+      },
+      "C3": {
+        "parents": [
+          "C1"
+        ],
+        "id": "C3"
+      },
+      "C4": {
+        "parents": [
+          "C3",
+          "C2"
+        ],
+        "id": "C4"
+      }
+    },
+    "HEAD": {
+      "target": "main",
+      "id": "HEAD"
+    }
+  },
+  "disabledMap": {
+    "git revert": true
+  },
+  "comparison": {},
+  "assertions": {},
+  "hasRemote": false
+}

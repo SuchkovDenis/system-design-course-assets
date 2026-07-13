@@ -1,0 +1,308 @@
+[
+  {
+    "id": "01-intro-commits",
+    "order": 1,
+    "sequence": "intro",
+    "sequenceTitle": "Основы",
+    "title": "Знакомство с коммитами Git",
+    "englishName": "Introduction to Git Commits",
+    "path": "01-intro-commits/"
+  },
+  {
+    "id": "02-intro-branching",
+    "order": 2,
+    "sequence": "intro",
+    "sequenceTitle": "Основы",
+    "title": "Ветки в Git",
+    "englishName": "Branching in Git",
+    "path": "02-intro-branching/"
+  },
+  {
+    "id": "03-intro-merging",
+    "order": 3,
+    "sequence": "intro",
+    "sequenceTitle": "Основы",
+    "title": "Слияние веток",
+    "englishName": "Merging in Git",
+    "path": "03-intro-merging/"
+  },
+  {
+    "id": "04-intro-rebasing",
+    "order": 4,
+    "sequence": "intro",
+    "sequenceTitle": "Основы",
+    "title": "Знакомство с rebase",
+    "englishName": "Rebase Introduction",
+    "path": "04-intro-rebasing/"
+  },
+  {
+    "id": "05-detached-head",
+    "order": 5,
+    "sequence": "rampup",
+    "sequenceTitle": "Навигация по истории",
+    "title": "Отделяем HEAD",
+    "englishName": "Detach yo' HEAD",
+    "path": "05-detached-head/"
+  },
+  {
+    "id": "06-relative-refs-caret",
+    "order": 6,
+    "sequence": "rampup",
+    "sequenceTitle": "Навигация по истории",
+    "title": "Относительные ссылки: ^",
+    "englishName": "Relative Refs (^)",
+    "path": "06-relative-refs-caret/"
+  },
+  {
+    "id": "07-relative-refs-tilde",
+    "order": 7,
+    "sequence": "rampup",
+    "sequenceTitle": "Навигация по истории",
+    "title": "Относительные ссылки: ~",
+    "englishName": "Relative Refs #2 (~)",
+    "path": "07-relative-refs-tilde/"
+  },
+  {
+    "id": "08-reversing-changes",
+    "order": 8,
+    "sequence": "rampup",
+    "sequenceTitle": "Навигация по истории",
+    "title": "Отмена изменений",
+    "englishName": "Reversing Changes in Git",
+    "path": "08-reversing-changes/"
+  },
+  {
+    "id": "09-cherry-pick",
+    "order": 9,
+    "sequence": "move",
+    "sequenceTitle": "Перемещение изменений",
+    "title": "Знакомство с cherry-pick",
+    "englishName": "Cherry-pick Intro",
+    "path": "09-cherry-pick/"
+  },
+  {
+    "id": "10-interactive-rebase",
+    "order": 10,
+    "sequence": "move",
+    "sequenceTitle": "Перемещение изменений",
+    "title": "Интерактивный rebase",
+    "englishName": "Interactive Rebase Intro",
+    "path": "10-interactive-rebase/"
+  },
+  {
+    "id": "11-grabbing-one-commit",
+    "order": 11,
+    "sequence": "mixed",
+    "sequenceTitle": "Смешанная практика",
+    "title": "Перенос одного коммита",
+    "englishName": "Grabbing Just 1 Commit",
+    "path": "11-grabbing-one-commit/"
+  },
+  {
+    "id": "12-juggling-commits",
+    "order": 12,
+    "sequence": "mixed",
+    "sequenceTitle": "Смешанная практика",
+    "title": "Перестановка коммитов",
+    "englishName": "Juggling Commits",
+    "path": "12-juggling-commits/"
+  },
+  {
+    "id": "13-juggling-commits-cherry-pick",
+    "order": 13,
+    "sequence": "mixed",
+    "sequenceTitle": "Смешанная практика",
+    "title": "Перестановка без rebase -i",
+    "englishName": "Juggling Commits #2",
+    "path": "13-juggling-commits-cherry-pick/"
+  },
+  {
+    "id": "14-tags",
+    "order": 14,
+    "sequence": "mixed",
+    "sequenceTitle": "Смешанная практика",
+    "title": "Теги Git",
+    "englishName": "Git Tags",
+    "path": "14-tags/"
+  },
+  {
+    "id": "15-describe",
+    "order": 15,
+    "sequence": "mixed",
+    "sequenceTitle": "Смешанная практика",
+    "title": "Команда git describe",
+    "englishName": "Git Describe",
+    "path": "15-describe/"
+  },
+  {
+    "id": "16-many-rebases",
+    "order": 16,
+    "sequence": "advanced",
+    "sequenceTitle": "Продвинутая история",
+    "title": "Последовательность rebase",
+    "englishName": "Rebasing over 9000 times",
+    "path": "16-many-rebases/"
+  },
+  {
+    "id": "17-multiple-parents",
+    "order": 17,
+    "sequence": "advanced",
+    "sequenceTitle": "Продвинутая история",
+    "title": "Несколько родителей",
+    "englishName": "Multiple parents",
+    "path": "17-multiple-parents/"
+  },
+  {
+    "id": "18-branch-spaghetti",
+    "order": 18,
+    "sequence": "advanced",
+    "sequenceTitle": "Продвинутая история",
+    "title": "Спагетти из веток",
+    "englishName": "Branch Spaghetti",
+    "path": "18-branch-spaghetti/"
+  },
+  {
+    "id": "19-clone",
+    "order": 19,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Знакомство с clone",
+    "englishName": "Clone Intro",
+    "path": "19-clone/"
+  },
+  {
+    "id": "20-remote-branches",
+    "order": 20,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Удаленные ветки",
+    "englishName": "Remote Branches",
+    "path": "20-remote-branches/"
+  },
+  {
+    "id": "21-fetch",
+    "order": 21,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Получение изменений через fetch",
+    "englishName": "Git Fetchin'",
+    "path": "21-fetch/"
+  },
+  {
+    "id": "22-pull",
+    "order": 22,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Получение изменений через pull",
+    "englishName": "Git Pullin'",
+    "path": "22-pull/"
+  },
+  {
+    "id": "23-fake-teamwork",
+    "order": 23,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Имитация командной работы",
+    "englishName": "Faking Teamwork",
+    "path": "23-fake-teamwork/"
+  },
+  {
+    "id": "24-push",
+    "order": 24,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Публикация через push",
+    "englishName": "Git Pushin'",
+    "path": "24-push/"
+  },
+  {
+    "id": "25-diverged-history",
+    "order": 25,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Разошедшаяся история",
+    "englishName": "Diverged History",
+    "path": "25-diverged-history/"
+  },
+  {
+    "id": "26-locked-main",
+    "order": 26,
+    "sequence": "remote",
+    "sequenceTitle": "Удаленные репозитории",
+    "title": "Защищенная ветка main",
+    "englishName": "Locked Main",
+    "path": "26-locked-main/"
+  },
+  {
+    "id": "27-push-main",
+    "order": 27,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Готовим main к публикации",
+    "englishName": "Push Main!",
+    "path": "27-push-main/"
+  },
+  {
+    "id": "28-merge-remotes",
+    "order": 28,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Слияния с удаленными ветками",
+    "englishName": "Merging with remotes",
+    "path": "28-merge-remotes/"
+  },
+  {
+    "id": "29-remote-tracking",
+    "order": 29,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Отслеживание удаленной ветки",
+    "englishName": "Remote Tracking",
+    "path": "29-remote-tracking/"
+  },
+  {
+    "id": "30-push-arguments",
+    "order": 30,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Аргументы git push",
+    "englishName": "Git push arguments",
+    "path": "30-push-arguments/"
+  },
+  {
+    "id": "31-push-refspec",
+    "order": 31,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Расширенные аргументы push",
+    "englishName": "Git push arguments -- Expanded!",
+    "path": "31-push-refspec/"
+  },
+  {
+    "id": "32-fetch-arguments",
+    "order": 32,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Аргументы git fetch",
+    "englishName": "Fetch arguments",
+    "path": "32-fetch-arguments/"
+  },
+  {
+    "id": "33-empty-source",
+    "order": 33,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Пустой источник refspec",
+    "englishName": "Source of nothing",
+    "path": "33-empty-source/"
+  },
+  {
+    "id": "34-pull-arguments",
+    "order": 34,
+    "sequence": "remoteAdvanced",
+    "sequenceTitle": "Продвинутая работа с remotes",
+    "title": "Аргументы git pull",
+    "englishName": "Pull arguments",
+    "path": "34-pull-arguments/"
+  }
+]
