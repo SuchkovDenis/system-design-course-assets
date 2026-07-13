@@ -149,10 +149,23 @@
         id = (commits[id].parents || [])[0];
       }
     });
+    const occupiedLanesByDepth = new Map();
+    const reserveLane = (id) => {
+      const commitDepth = depthMemo[id];
+      if (!occupiedLanesByDepth.has(commitDepth)) occupiedLanesByDepth.set(commitDepth, new Set());
+      occupiedLanesByDepth.get(commitDepth).add(lane[id]);
+    };
+    ids.filter((id) => lane[id] !== undefined).forEach(reserveLane);
     ids.sort((a, b) => depthMemo[b] - depthMemo[a] || compareCommitIds(a, b)).forEach((id) => {
       if (lane[id] !== undefined) return;
       const firstParent = (commits[id].parents || [])[0];
-      lane[id] = firstParent && lane[firstParent] !== undefined ? lane[firstParent] : nextLane++;
+      const preferred = firstParent && lane[firstParent] !== undefined ? lane[firstParent] : 0;
+      const occupiedAtDepth = occupiedLanesByDepth.get(depthMemo[id]) || new Set();
+      let candidate = preferred;
+      while (occupiedAtDepth.has(candidate)) candidate += 1;
+      lane[id] = candidate;
+      nextLane = Math.max(nextLane, candidate + 1);
+      reserveLane(id);
     });
 
     const labelsByCommit = {};
@@ -182,7 +195,61 @@
     );
   }
 
-  function placeReferenceLabel(point, pillWidth, width, height, occupied, preferredSides) {
+  function segmentIntersectsBox(segment, box, padding = 3) {
+    const left = box.x - padding;
+    const right = box.x + box.width + padding;
+    const top = box.y - padding;
+    const bottom = box.y + box.height + padding;
+    const dx = segment.x2 - segment.x1;
+    const dy = segment.y2 - segment.y1;
+    let start = 0;
+    let end = 1;
+    const checks = [
+      [-dx, segment.x1 - left],
+      [dx, right - segment.x1],
+      [-dy, segment.y1 - top],
+      [dy, bottom - segment.y1]
+    ];
+    for (const [direction, distance] of checks) {
+      if (direction === 0) {
+        if (distance < 0) return false;
+        continue;
+      }
+      const ratio = distance / direction;
+      if (direction < 0) start = Math.max(start, ratio);
+      else end = Math.min(end, ratio);
+      if (start > end) return false;
+    }
+    return true;
+  }
+
+  function segmentsIntersect(left, right) {
+    const cross = (ax, ay, bx, by) => ax * by - ay * bx;
+    const rX = left.x2 - left.x1;
+    const rY = left.y2 - left.y1;
+    const sX = right.x2 - right.x1;
+    const sY = right.y2 - right.y1;
+    const denominator = cross(rX, rY, sX, sY);
+    const offsetX = right.x1 - left.x1;
+    const offsetY = right.y1 - left.y1;
+    if (Math.abs(denominator) < 0.001) return false;
+    const t = cross(offsetX, offsetY, sX, sY) / denominator;
+    const u = cross(offsetX, offsetY, rX, rY) / denominator;
+    return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+  }
+
+  function connectorForPlacement(point, placement, nodeRadius, pillHeight) {
+    const centerX = placement.x + placement.width / 2;
+    const centerY = placement.y + pillHeight / 2;
+    return {
+      top: { x1: point.x, y1: point.y - nodeRadius, x2: centerX, y2: placement.y + pillHeight },
+      right: { x1: point.x + nodeRadius, y1: point.y, x2: placement.x, y2: centerY },
+      bottom: { x1: point.x, y1: point.y + nodeRadius, x2: centerX, y2: placement.y },
+      left: { x1: point.x - nodeRadius, y1: point.y, x2: placement.x + placement.width, y2: centerY }
+    }[placement.side];
+  }
+
+  function placeReferenceLabel(point, commitId, pillWidth, width, height, occupied, edgeSegments, preferredSides) {
     const nodeRadius = 17;
     const pillHeight = 24;
     const gap = 8;
@@ -204,22 +271,26 @@
           height: pillHeight,
           side
         };
-        const collisionCount = occupied.filter((other) => boxesOverlap(box, other)).length;
+        const connector = connectorForPlacement(point, box, nodeRadius, pillHeight);
+        const pillCollisions = occupied.filter((other) => boxesOverlap(box, other)).length;
+        const connectorCollisions = occupied.filter((other) => (
+          other.commitId !== commitId && segmentIntersectsBox(connector, other)
+        )).length;
+        const edgePillCollisions = edgeSegments.filter((segment) => segmentIntersectsBox(segment, box, 2)).length;
+        const connectorEdgeCrossings = edgeSegments.filter((segment) => segmentsIntersect(connector, segment)).length;
         const clampDistance = Math.abs(box.x - raw.x) + Math.abs(box.y - raw.y);
-        const score = collisionCount * 1000 + clampDistance * 5 + preference * 4 + ring * 2;
-        if (!best || score < best.score) best = { ...box, score };
+        const score = pillCollisions * 20000
+          + connectorCollisions * 10000
+          + edgePillCollisions * 4000
+          + connectorEdgeCrossings * 600
+          + clampDistance * 5
+          + preference * 4
+          + ring * 2;
+        if (!best || score < best.score) best = { ...box, connector, score };
       });
     });
     occupied.push(best);
-    const centerX = best.x + pillWidth / 2;
-    const centerY = best.y + pillHeight / 2;
-    const connector = {
-      top: { x1: point.x, y1: point.y - nodeRadius, x2: centerX, y2: best.y + pillHeight },
-      right: { x1: point.x + nodeRadius, y1: point.y, x2: best.x, y2: centerY },
-      bottom: { x1: point.x, y1: point.y + nodeRadius, x2: centerX, y2: best.y },
-      left: { x1: point.x - nodeRadius, y1: point.y, x2: best.x + pillWidth, y2: centerY }
-    }[best.side];
-    return { ...best, connector };
+    return best;
   }
 
   function captureMotion(container) {
@@ -265,14 +336,35 @@
     });
     const headRef = tree.HEAD.target;
     const headCommit = tree.branches[headRef] ? tree.branches[headRef].target : headRef;
+    const edgeSegments = [];
 
     ids.forEach((id) => {
       const child = points[id];
       (tree.commits[id].parents || []).forEach((parentId, parentIndex) => {
         const parent = points[parentId];
         if (!parent) return;
+        const isStraight = parent.y === child.y;
+        if (isStraight) {
+          edgeSegments.push({ x1: parent.x + 17, y1: parent.y, x2: child.x - 17, y2: child.y });
+        } else {
+          const start = { x: parent.x + 15, y: parent.y };
+          const control1 = { x: parent.x + 38, y: parent.y };
+          const control2 = { x: child.x - 38, y: child.y };
+          const end = { x: child.x - 15, y: child.y };
+          let previous = start;
+          for (let sample = 1; sample <= 12; sample += 1) {
+            const t = sample / 12;
+            const inverse = 1 - t;
+            const current = {
+              x: inverse ** 3 * start.x + 3 * inverse ** 2 * t * control1.x + 3 * inverse * t ** 2 * control2.x + t ** 3 * end.x,
+              y: inverse ** 3 * start.y + 3 * inverse ** 2 * t * control1.y + 3 * inverse * t ** 2 * control2.y + t ** 3 * end.y
+            };
+            edgeSegments.push({ x1: previous.x, y1: previous.y, x2: current.x, y2: current.y });
+            previous = current;
+          }
+        }
         const path = svgElement("path", {
-          d: parent.y === child.y
+          d: isStraight
             ? `M ${parent.x + 17} ${parent.y} L ${child.x - 17} ${child.y}`
             : `M ${parent.x + 15} ${parent.y} C ${parent.x + 38} ${parent.y}, ${child.x - 38} ${child.y}, ${child.x - 15} ${child.y}`,
           class: "git-line",
@@ -290,6 +382,7 @@
         cy: point.y,
         r: 17,
         class: `git-node${isHead ? " is-head" : ""}`,
+        "data-commit-id": id,
         "data-motion-key": `${keyPrefix}-node-${id}`
       });
       const label = svgElement("text", {
@@ -313,7 +406,8 @@
       x: points[id].x - 19,
       y: points[id].y - 19,
       width: 38,
-      height: 38
+      height: 38,
+      commitId: id
     }));
     Object.entries(labelsByCommit).forEach(([commitId, labels]) => {
       const point = points[commitId];
@@ -326,15 +420,26 @@
           : index === 0
             ? ["bottom", "right", "left", "top"]
             : ["right", "left", "bottom", "top"];
-        const placement = placeReferenceLabel(point, pillWidth, width, height, occupied, preferredSides);
+        const placement = placeReferenceLabel(
+          point,
+          commitId,
+          pillWidth,
+          width,
+          height,
+          occupied,
+          edgeSegments,
+          preferredSides
+        );
         svg.appendChild(svgElement("line", {
           ...placement.connector,
           class: "branch-connector",
+          "data-anchor-commit": commitId,
           "data-motion-key": `${keyPrefix}-connector-${name}`
         }));
         svg.appendChild(svgElement("rect", {
           x: placement.x, y: placement.y, width: pillWidth, height: 24, rx: 12,
           class: `branch-pill${isHead ? " is-head" : ""}`,
+          "data-anchor-commit": commitId,
           "data-motion-key": `${keyPrefix}-pill-${name}`
         }));
         const text = svgElement("text", {

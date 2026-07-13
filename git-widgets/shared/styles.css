@@ -104,7 +104,7 @@ code { font-family: var(--st-font-code); }
 .repo-subgraph { overflow-x: auto; }
 .repo-subgraph + .repo-subgraph { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #cfcfcf; }
 .repo-title { margin: 0 0 4px; color: var(--st-text-muted); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-.git-graph { display: block; width: auto; max-width: none; height: auto; margin: 0 auto; overflow: visible; }
+.git-graph { display: block; width: auto; max-width: 100%; height: auto; margin: 0 auto; overflow: visible; }
 .git-line { fill: none; stroke: #a8a8a8; stroke-width: 3; stroke-linecap: round; }
 .git-node { fill: white; stroke: #777; stroke-width: 3; }
 .git-node.is-head { fill: #666; }
