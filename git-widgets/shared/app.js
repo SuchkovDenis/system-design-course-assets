@@ -33,6 +33,7 @@
   let completed = false;
   let mergeTimers = [];
   let toastTimer;
+  let terminalResizeFrame;
   let rebaseItems = [];
 
   function svgElement(name, attributes = {}) {
@@ -67,7 +68,28 @@
     message.className = `terminal-message ${type}`;
     message.textContent = text;
     elements.output.appendChild(message);
-    elements.output.scrollTop = elements.output.scrollHeight;
+    growTerminal();
+  }
+
+  function growTerminal(reset = false) {
+    if (reset) elements.output.style.height = "";
+    window.cancelAnimationFrame(terminalResizeFrame);
+    terminalResizeFrame = window.requestAnimationFrame(() => {
+      const styles = window.getComputedStyle(elements.output);
+      const minHeight = Number.parseFloat(styles.minHeight) || 0;
+      const maxHeight = Number.parseFloat(styles.maxHeight) || Number.POSITIVE_INFINITY;
+      const padding = (Number.parseFloat(styles.paddingTop) || 0) + (Number.parseFloat(styles.paddingBottom) || 0);
+      const contentHeight = [...elements.output.children].reduce((total, child) => {
+        const childStyles = window.getComputedStyle(child);
+        return total + child.getBoundingClientRect().height
+          + (Number.parseFloat(childStyles.marginTop) || 0)
+          + (Number.parseFloat(childStyles.marginBottom) || 0);
+      }, padding);
+      const desiredHeight = Math.min(maxHeight, Math.max(minHeight, contentHeight));
+      elements.output.style.height = `${Math.ceil(desiredHeight)}px`;
+      elements.output.scrollTop = elements.output.scrollHeight;
+      postResize();
+    });
   }
 
   function showToast(text) {
@@ -385,6 +407,7 @@
     elements.info.hidden = false;
     elements.success.hidden = true;
     elements.output.replaceChildren();
+    growTerminal(true);
     appendTerminal("Репозиторий сброшен. Введите первую команду.", "welcome");
     renderState(engine.reset());
     elements.input.value = "";
@@ -451,6 +474,7 @@
     appendTerminal(command, "command");
     if (command.toLowerCase() === "clear") {
       elements.output.replaceChildren();
+      growTerminal(true);
       return;
     }
     const result = await engine.execute(command);
@@ -494,6 +518,7 @@
     renderState(state);
     elements.goalCaption.textContent = repositoryCaption(engine.getGoal());
     renderRepository(elements.goalRepository, engine.getGoal());
+    growTerminal(true);
     elements.input.focus();
     postResize();
   }
@@ -526,7 +551,9 @@
   });
 
   if ("ResizeObserver" in window) new ResizeObserver(postResize).observe(document.body);
+  window.addEventListener("resize", () => growTerminal());
   window.addEventListener("load", postResize);
+  if (document.fonts) document.fonts.ready.then(() => growTerminal());
   init().catch((error) => {
     appendTerminal(error.message, "error");
     elements.input.disabled = true;
