@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Эволюция TCP cwnd</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#151821;background:#f5f7fa}*{box-sizing:border-box}body{margin:0;padding:18px}.app{max-width:980px;margin:auto;background:#fff;border:1px solid #d9dee8;border-radius:18px;padding:20px;box-shadow:0 12px 36px rgba(20,30,50,.08)}h1{font-size:clamp(22px,4vw,34px);margin:0 0 6px}.lead{color:#5e6777;margin:0 0 18px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}button,input{font:inherit;border:1px solid #cbd2dd;border-radius:10px;padding:9px 12px;background:#fff}button{cursor:pointer;font-weight:600}button.primary{background:#181b22;color:#fff;border-color:#181b22}.settings{display:grid;grid-template-columns:repeat(2,minmax(120px,220px));gap:10px;margin-bottom:8px}label{font-size:13px;color:#4d5667;display:grid;gap:5px}.layout{display:grid;grid-template-columns:1.35fr .65fr;gap:14px}.chart{border:1px solid #d8dee8;border-radius:14px;padding:10px;background:#fafbfd;min-height:390px}svg{width:100%;height:360px;display:block}.card{border:1px solid #d8dee8;border-radius:14px;padding:14px;background:#fafbfd}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:#fff;border:1px solid #e0e5ec;border-radius:12px;padding:10px}.metric b{font-size:24px;display:block}.message{margin-top:10px;line-height:1.45;min-height:95px}.history{max-height:210px;overflow:auto;margin-top:12px}.row{display:grid;grid-template-columns:48px 64px 1fr;gap:8px;padding:6px;border-radius:8px;font-size:13px}.row:last-child{background:#1c2028;color:white}.legend{font-size:12px;color:#596273;margin-top:6px}@media(max-width:760px){.layout{grid-template-columns:1fr}.chart{min-height:320px}svg{height:290px}}
+</style>
+</head>
+<body><main class="app">
+<h1>Как меняется TCP congestion window</h1>
+<p class="lead">Добавляйте RTT и события потери. График показывает переход между slow start и congestion avoidance.</p>
+<div class="settings"><label>Начальный ssthresh, MSS<input id="initialThreshold" type="number" min="2" max="64" value="16"></label><label>Начальный cwnd, MSS<input id="initialCwnd" type="number" min="1" max="16" value="1"></label></div>
+<div class="controls"><button class="primary" id="next">Следующий RTT без потери</button><button id="dup">3 duplicate ACK</button><button id="timeout">Timeout</button><button id="reset">Сбросить</button></div>
+<div class="layout"><section class="chart"><svg id="svg" viewBox="0 0 720 360" preserveAspectRatio="none"></svg><div class="legend">Упрощенная учебная модель: slow start удваивает cwnd за RTT, congestion avoidance прибавляет 1 MSS; timeout сбрасывает cwnd до 1, 3 duplicate ACK уменьшают окно примерно вдвое.</div></section><aside class="card"><div class="metrics"><div class="metric"><span>RTT</span><b id="rtt">0</b></div><div class="metric"><span>cwnd</span><b id="cwnd">1</b></div><div class="metric"><span>ssthresh</span><b id="threshold">16</b></div><div class="metric"><span>Фаза</span><b id="phase" style="font-size:16px">slow start</b></div></div><div class="message" id="message"></div><div class="history" id="history"></div></aside></div>
+</main>
+<script>
+const $=s=>document.querySelector(s);let points=[],cwnd=1,ssthresh=16,rtt=0;
+function phase(){return cwnd<ssthresh?'slow start':'congestion avoidance'}
+function reset(){cwnd=Math.max(1,+$('#initialCwnd').value);ssthresh=Math.max(2,+$('#initialThreshold').value);rtt=0;points=[{rtt,cwnd,event:'start',ssthresh,msg:'Начальное состояние.'}];render()}
+function noLoss(){const before=cwnd;rtt++;if(cwnd<ssthresh)cwnd=Math.min(cwnd*2,ssthresh);else cwnd+=1;points.push({rtt,cwnd,event:'ok',ssthresh,msg:before<ssthresh?`Slow start: окно растет с ${before} до ${cwnd} MSS.`:`Congestion avoidance: окно растет линейно с ${before} до ${cwnd} MSS.`});render()}
+function timeout(){const before=cwnd;rtt++;ssthresh=Math.max(2,Math.floor(cwnd/2));cwnd=1;points.push({rtt,cwnd,event:'timeout',ssthresh,msg:`Timeout: ssthresh становится ${ssthresh} MSS, cwnd сбрасывается с ${before} до 1 MSS.`});render()}
+function dup(){const before=cwnd;rtt++;ssthresh=Math.max(2,Math.floor(cwnd/2));cwnd=ssthresh;points.push({rtt,cwnd,event:'dup',ssthresh,msg:`Три duplicate ACK: быстрая повторная передача, окно уменьшается с ${before} примерно вдвое — до ${cwnd} MSS.`});render()}
+function render(){const svg=$('#svg');const maxX=Math.max(10,points.length-1);const maxY=Math.max(20,...points.map(p=>p.cwnd),...points.map(p=>p.ssthresh));const left=48,right=20,top=18,bottom=42,W=720,H=360;const x=n=>left+(W-left-right)*(n/maxX);const y=v=>H-bottom-(H-top-bottom)*(v/maxY);let html='';
+for(let i=0;i<=5;i++){const v=Math.round(maxY*i/5);html+=`<line x1="${left}" y1="${y(v)}" x2="${W-right}" y2="${y(v)}" stroke="#dde2e9"/><text x="${left-8}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="#667080">${v}</text>`}
+for(let i=0;i<=maxX;i+=Math.max(1,Math.ceil(maxX/10))){html+=`<text x="${x(i)}" y="${H-16}" text-anchor="middle" font-size="12" fill="#667080">${i}</text>`}
+html+=`<line x1="${left}" y1="${top}" x2="${left}" y2="${H-bottom}" stroke="#7d8796"/><line x1="${left}" y1="${H-bottom}" x2="${W-right}" y2="${H-bottom}" stroke="#7d8796"/>`;
+const path=points.map((p,i)=>`${i?'L':'M'} ${x(p.rtt)} ${y(p.cwnd)}`).join(' ');html+=`<path d="${path}" fill="none" stroke="#27354a" stroke-width="4" stroke-linejoin="round"/>`;
+const thresholdPath=points.map((p,i)=>`${i?'L':'M'} ${x(p.rtt)} ${y(p.ssthresh)}`).join(' ');html+=`<path d="${thresholdPath}" fill="none" stroke="#9a6f42" stroke-width="2" stroke-dasharray="7 6"/>`;
+for(const p of points){const fill=p.event==='timeout'?'#b55b5b':p.event==='dup'?'#d08a2e':'#5475a6';html+=`<circle cx="${x(p.rtt)}" cy="${y(p.cwnd)}" r="6" fill="${fill}" stroke="white" stroke-width="2"><title>RTT ${p.rtt}: cwnd=${p.cwnd}, ssthresh=${p.ssthresh}</title></circle>`}
+html+=`<text x="${W-130}" y="28" font-size="12" fill="#9a6f42">--- ssthresh</text><text x="${W-130}" y="48" font-size="12" fill="#27354a">━━ cwnd</text>`;svg.innerHTML=html;
+const last=points[points.length-1];$('#rtt').textContent=rtt;$('#cwnd').textContent=cwnd;$('#threshold').textContent=ssthresh;$('#phase').textContent=phase();$('#message').textContent=last.msg;$('#history').innerHTML=points.map(p=>`<div class="row"><span>${p.rtt}</span><b>${p.cwnd}</b><span>${p.msg}</span></div>`).join('');$('#history').scrollTop=$('#history').scrollHeight}
+$('#next').onclick=noLoss;$('#timeout').onclick=timeout;$('#dup').onclick=dup;$('#reset').onclick=reset;reset();
+</script></body></html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSMA/CD и бинарная экспоненциальная выдержка</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#151821;background:#f5f7fa}*{box-sizing:border-box}body{margin:0;padding:18px}.app{max-width:980px;margin:auto;background:#fff;border:1px solid #d9dee8;border-radius:18px;padding:20px;box-shadow:0 12px 36px rgba(20,30,50,.08)}h1{font-size:clamp(22px,4vw,34px);margin:0 0 6px}.lead{color:#5e6777;margin:0 0 18px}.controls{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:10px}label{font-size:13px;color:#4d5667;display:grid;gap:5px}input,button{font:inherit;border:1px solid #cbd2dd;border-radius:10px;padding:9px 10px;background:#fff}button{cursor:pointer;font-weight:600}button.primary{background:#181b22;color:#fff;border-color:#181b22}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.wire{position:relative;height:155px;border:1px solid #d8dee8;border-radius:14px;background:#fafbfd;overflow:hidden}.host{position:absolute;top:20px;width:70px;text-align:center;font-weight:700}.host.a{left:12px}.host.b{right:12px}.node{width:48px;height:48px;border:2px solid #444b58;border-radius:12px;margin:auto;background:#fff;display:grid;place-items:center}.line{position:absolute;left:70px;right:70px;top:84px;height:5px;background:#8993a3;border-radius:9px}.signal{position:absolute;top:75px;width:24px;height:24px;border-radius:50%;background:#dce7fa;border:2px solid #5d76a3;transition:left .45s linear,right .45s linear;display:none}.signal.left{left:70px}.signal.right{right:70px}.collision{position:absolute;left:50%;top:62px;transform:translateX(-50%);font-size:38px;display:none}.jam{position:absolute;left:50%;top:105px;transform:translateX(-50%);font-size:13px;font-weight:700;background:#f7dfdf;padding:5px 9px;border-radius:999px;display:none}.panel{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:14px}.card{border:1px solid #d8dee8;border-radius:14px;padding:14px;background:#fafbfd}.formula{font-size:20px;font-weight:700}.value{font-size:30px;font-weight:800;margin:7px 0}.message{line-height:1.45;min-height:76px}.log{max-height:185px;overflow:auto}.event{padding:6px 8px;border-radius:8px;color:#4d5667}.event.active{background:#1c2028;color:white}@media(max-width:700px){.controls{grid-template-columns:1fr 1fr}.panel{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main class="app">
+<h1>CSMA/CD и binary exponential backoff</h1>
+<p class="lead">Посмотрите, почему коллизия обнаруживается не мгновенно и как растет диапазон случайной выдержки.</p>
+<div class="controls">
+<label>Номер коллизии n<input id="attempt" type="number" min="1" max="16" value="3"></label>
+<label>Слот, мкс<input id="slot" type="number" min="1" step="0.1" value="51.2"></label>
+<label>Выбранное k<input id="k" type="number" min="0" value="-1"><small>-1 = случайное</small></label>
+<label>Скорость анимации, мс<input id="speed" type="number" min="250" max="2000" step="50" value="750"></label>
+</div>
+<div class="buttons"><button class="primary" id="build">Смоделировать</button><button id="next">Следующий шаг</button><button id="play">Запустить</button><button id="random">Случайное k</button></div>
+<section class="wire">
+<div class="host a"><div class="node">A</div><div>станция A</div></div><div class="host b"><div class="node">B</div><div>станция B</div></div>
+<div class="line"></div><div id="sigA" class="signal left"></div><div id="sigB" class="signal right"></div><div id="collision" class="collision">⚡</div><div id="jam" class="jam">JAM</div>
+</section>
+<div class="panel"><section class="card"><div class="message" id="message"></div><div class="formula">k ∈ [0, 2<sup>min(n,10)</sup> − 1]</div><div class="value" id="range"></div><div id="wait"></div></section><section class="card log" id="log"></section></div>
+</main>
+<script>
+const $=s=>document.querySelector(s);let events=[],index=0,timer=null;
+function build(){clearInterval(timer);const n=Math.max(1,+$('#attempt').value),exp=Math.min(n,10),max=2**exp-1,slot=+$('#slot').value;let k=+$('#k').value;if(k<0||k>max)k=Math.floor(Math.random()*(max+1));$('#k').value=k;const wait=k*slot;events=[
+{m:'Обе станции проверили среду, услышали тишину и почти одновременно начали передачу.',a:1,b:1,c:0,j:0},
+{m:'Сигналы распространяются навстречу. Пока фронт сигнала другой станции не дошел, каждая считает передачу успешной.',a:2,b:2,c:0,j:0},
+{m:'Сигналы встречаются: возникает коллизия. Станции продолжают передачу достаточно долго, чтобы обнаружить ее.',a:2,b:2,c:1,j:0},
+{m:'После обнаружения коллизии передается jam-сигнал, чтобы все участники коллизионного домена заметили событие.',a:0,b:0,c:1,j:1},
+{m:`После коллизии №${n} показатель степени равен min(${n},10)=${exp}. Диапазон k: 0…${max}. Выбрано k=${k}.`,a:0,b:0,c:0,j:0},
+{m:`Станция ждет ${k} слот(ов): ${k} × ${slot} мкс = ${wait.toFixed(1)} мкс, затем снова проверяет среду и пытается передать.`,a:0,b:0,c:0,j:0}
+];index=0;render(max,k,wait)}
+function render(max,k,wait){const e=events[index];$('#message').textContent=e.m;$('#range').textContent=`0 … ${max}; выбрано k=${k}`;$('#wait').textContent=`Максимальная выдержка: ${(max*+$('#slot').value).toFixed(1)} мкс. Текущая: ${wait.toFixed(1)} мкс.`;const a=$('#sigA'),b=$('#sigB');a.style.display=e.a?'block':'none';b.style.display=e.b?'block':'none';a.style.left=e.a===2?'calc(50% - 12px)':'70px';b.style.right=e.b===2?'calc(50% - 12px)':'70px';$('#collision').style.display=e.c?'block':'none';$('#jam').style.display=e.j?'block':'none';$('#log').innerHTML=events.map((x,i)=>`<div class="event ${i===index?'active':''}">${i+1}. ${x.m}</div>`).join('')}
+function next(){if(!events.length)build();else{index=Math.min(index+1,events.length-1);const n=Math.max(1,+$('#attempt').value),max=2**Math.min(n,10)-1,k=+$('#k').value,wait=k*+$('#slot').value;render(max,k,wait)}}
+$('#build').onclick=build;$('#next').onclick=next;$('#play').onclick=()=>{build();clearInterval(timer);timer=setInterval(()=>{if(index>=events.length-1){clearInterval(timer);return}next()},+$('#speed').value)};$('#random').onclick=()=>{$('#k').value=-1;build()};build();
+</script></body></html>

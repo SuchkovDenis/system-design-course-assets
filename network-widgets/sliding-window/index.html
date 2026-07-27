@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Go-Back-N и Selective Repeat</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#151821;background:#f5f7fa}*{box-sizing:border-box}body{margin:0;padding:18px}.app{max-width:980px;margin:auto;background:white;border:1px solid #d9dee8;border-radius:18px;padding:20px;box-shadow:0 12px 36px rgba(20,30,50,.08)}h1{font-size:clamp(22px,4vw,34px);margin:0 0 6px}.lead{color:#5e6777;margin:0 0 18px}.controls{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:10px;margin-bottom:14px}label{font-size:13px;color:#4d5667;display:grid;gap:5px}select,input,button{font:inherit;border:1px solid #cbd2dd;border-radius:10px;padding:9px 10px;background:#fff}button{cursor:pointer;font-weight:600}button.primary{background:#181b22;color:#fff;border-color:#181b22}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.stage{border:1px solid #d8dee8;border-radius:14px;padding:16px;background:#fafbfd}.row{display:grid;grid-template-columns:92px 1fr;align-items:center;gap:12px;margin:10px 0}.name{font-weight:700}.frames{display:flex;gap:7px;flex-wrap:wrap;min-height:42px}.frame{width:42px;height:36px;display:grid;place-items:center;border-radius:9px;border:1px solid #aeb7c6;background:white;font-weight:700}.frame.sent{background:#e8eef8}.frame.acked{background:#e7f4ec}.frame.lost{background:#f8e5e5;text-decoration:line-through}.frame.buffered{background:#fff0cf}.frame.waiting{opacity:.45}.message{min-height:70px;margin-top:12px;padding:13px;border-radius:12px;background:#eef2f7;line-height:1.45}.meta{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#596273;font-size:13px;margin-top:9px}.log{margin-top:14px;max-height:210px;overflow:auto;border-top:1px solid #e3e7ed;padding-top:8px}.event{padding:6px 8px;border-radius:8px;color:#4d5667}.event.active{background:#1c2028;color:white}.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#596273;margin-top:12px}.dot{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #9fa8b5;vertical-align:-2px;margin-right:4px}@media(max-width:700px){.controls{grid-template-columns:1fr 1fr}.row{grid-template-columns:70px 1fr}.frame{width:36px}}
+</style>
+</head>
+<body><main class="app">
+<h1>Go-Back-N и Selective Repeat</h1>
+<p class="lead">Выберите потерянный кадр и пошагово сравните, что происходит после потери.</p>
+<div class="controls">
+<label>Протокол<select id="protocol"><option value="gbn">Go-Back-N</option><option value="sr">Selective Repeat</option></select></label>
+<label>Размер окна<input id="window" type="number" min="1" max="6" value="4"></label>
+<label>Всего кадров<input id="total" type="number" min="4" max="12" value="8"></label>
+<label>Теряется кадр<input id="lost" type="number" min="1" max="8" value="3"></label>
+</div>
+<div class="buttons"><button class="primary" id="build">Построить сценарий</button><button id="next">Следующий шаг</button><button id="play">Запустить</button><button id="reset">Сбросить</button></div>
+<section class="stage">
+<div class="row"><div class="name">Отправитель</div><div class="frames" id="sender"></div></div>
+<div class="row"><div class="name">Получатель</div><div class="frames" id="receiver"></div></div>
+<div class="message" id="message">Нажмите «Построить сценарий».</div>
+<div class="meta"><span id="stepLabel">Шаг 0</span><span id="protocolLabel"></span></div>
+<div class="legend"><span><i class="dot" style="background:#e8eef8"></i>отправлен</span><span><i class="dot" style="background:#e7f4ec"></i>подтвержден</span><span><i class="dot" style="background:#f8e5e5"></i>потерян</span><span><i class="dot" style="background:#fff0cf"></i>буферизован</span></div>
+<div class="log" id="log"></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s); let events=[],index=-1,timer=null;
+function state(total){return {sender:Array(total).fill('waiting'),receiver:Array(total).fill('waiting')}}
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function push(arr,st,msg){arr.push({state:clone(st),msg})}
+function build(){clearInterval(timer); const p=$('#protocol').value; const w=Math.max(1,+$('#window').value); const total=Math.max(4,+$('#total').value); let lost=Math.max(1,+$('#lost').value); lost=Math.min(lost,total); $('#lost').max=total; const st=state(total); const ev=[]; push(ev,st,'Отправитель готов передать первое окно.');
+  const firstEnd=Math.min(total,w);
+  for(let n=1;n<=firstEnd;n++){st.sender[n-1]=n===lost?'lost':'sent'; if(n!==lost){if(p==='sr'){st.receiver[n-1]=n<lost?'acked':'buffered'}else{st.receiver[n-1]=n<lost?'acked':'waiting'}} push(ev,st,n===lost?`Кадр ${n} теряется в линии.`:`Кадр ${n} достигает получателя.`)}
+  if(p==='gbn'){
+    push(ev,st,`Go-Back-N: получатель принимает только непрерывную последовательность. Кадры после ${lost} отбрасываются и повторяется ACK последнего непрерывного кадра ${lost-1}.`);
+    for(let n=lost+1;n<=firstEnd;n++)st.receiver[n-1]='waiting';
+    push(ev,st,`Истекает тайм-аут кадра ${lost}. Отправитель повторяет кадр ${lost} и все последующие неподтвержденные кадры.`);
+    for(let n=lost;n<=firstEnd;n++){st.sender[n-1]='sent';st.receiver[n-1]='acked';push(ev,st,`Повторно передан и принят кадр ${n}.`)}
+  }else{
+    push(ev,st,`Selective Repeat: кадры после ${lost} сохраняются в буфере и подтверждаются отдельно.`);
+    push(ev,st,`Истекает тайм-аут только кадра ${lost}. Отправитель повторяет только его.`);
+    st.sender[lost-1]='sent';st.receiver[lost-1]='acked';
+    for(let n=lost+1;n<=firstEnd;n++)if(st.receiver[n-1]==='buffered')st.receiver[n-1]='acked';
+    push(ev,st,`Кадр ${lost} принят. Буферизованные кадры теперь образуют непрерывную последовательность и передаются приложению.`)
+  }
+  for(let n=firstEnd+1;n<=total;n++){st.sender[n-1]='sent';st.receiver[n-1]='acked';push(ev,st,`Окно сдвигается: кадр ${n} передан и подтвержден.`)}
+  push(ev,st,'Передача завершена. Сравните число повторных передач в двух протоколах.'); events=ev; index=0; render();
+}
+function render(){if(!events.length)return; const e=events[index], total=e.state.sender.length; $('#sender').innerHTML='';$('#receiver').innerHTML=''; for(let i=0;i<total;i++){const a=document.createElement('div');a.className='frame '+e.state.sender[i];a.textContent=i+1;$('#sender').append(a);const b=document.createElement('div');b.className='frame '+e.state.receiver[i];b.textContent=i+1;$('#receiver').append(b)} $('#message').textContent=e.msg;$('#stepLabel').textContent=`Шаг ${index+1} из ${events.length}`;$('#protocolLabel').textContent=$('#protocol').value==='gbn'?'Go-Back-N':'Selective Repeat';$('#log').innerHTML=events.map((x,i)=>`<div class="event ${i===index?'active':''}">${i+1}. ${x.msg}</div>`).join(''); const active=$('#log .active');if(active)active.scrollIntoView({block:'nearest'})}
+function next(){if(!events.length)build();else{index=Math.min(index+1,events.length-1);render()}}
+$('#build').onclick=build;$('#next').onclick=next;$('#play').onclick=()=>{if(!events.length)build();clearInterval(timer);timer=setInterval(()=>{if(index>=events.length-1){clearInterval(timer);return}next()},900)};$('#reset').onclick=()=>{clearInterval(timer);events=[];index=-1;$('#sender').innerHTML='';$('#receiver').innerHTML='';$('#message').textContent='Нажмите «Построить сценарий».';$('#log').innerHTML='';$('#stepLabel').textContent='Шаг 0'};build();
+</script></body></html>
